@@ -1,0 +1,197 @@
+.Dd October 14, 2026
+.Dt KEEPAWAKE 1
+.Os
+.Sh NAME
+.Nm keepawake
+.Nd keep a Mac awake with IOKit power assertions
+.Sh SYNOPSIS
+.Nm
+.Cm start
+.Op options
+.Nm
+.Cm stop
+.Op Fl -agent | Fl -daemon
+.Nm
+.Cm resume
+.Op Fl -agent | Fl -daemon
+.Nm
+.Cm status
+.Op Fl -json
+.Op Fl -keepawake-only
+.Nm
+.Cm install
+.Op Fl -daemon | Fl -agent
+.Op options
+.Nm
+.Cm uninstall
+.Op Fl -purge
+.Nm
+.Cm schedule
+.Ar specification
+.Nm
+.Cm config
+.Sh DESCRIPTION
+.Nm
+holds IOKit power assertions so a Mac does not idle sleep. It can run in the foreground, or install a per-user LaunchAgent or a system LaunchDaemon. Managed preferences in the
+.Sy com.keepawake
+domain let an MDM cap duration and publish a default weekly schedule.
+.Pp
+If IOKit cannot create an assertion,
+.Nm
+falls back to
+.Xr caffeinate 8
+unless
+.Fl -backend Ar iokit
+was requested.
+.Sh COMMANDS
+.Bl -tag -width indent
+.It Cm start
+Hold an assertion until the selected condition ends. Control-C releases it.
+.It Cm stop
+Signal recorded KeepAwake processes and unload launchd jobs. Plists stay on disk.
+.It Cm resume
+Load installed plists with
+.Xr launchctl 1
+.Cm bootstrap .
+.It Cm status
+Show KeepAwake jobs, session files, and
+.Xr pmset 1
+assertions.
+.It Cm install
+Write a launchd plist and bootstrap it.
+.It Cm uninstall
+Bootout the job and delete the plist. Add
+.Fl -purge
+to delete the copied binary.
+.It Cm schedule
+Explain a weekly schedule and print the next transition.
+.It Cm config
+Print the effective preferences, including managed preferences.
+.El
+.Sh MODES
+Pass at most one mode. With no mode,
+.Cm start
+holds indefinitely and
+.Cm install
+uses
+.Sy DefaultSchedule
+when that key is set.
+.Bl -tag -width indent
+.It Fl -indefinite
+Hold until the process is interrupted.
+.It Fl -duration Ar value
+Hold for a duration such as
+.Ar 45m ,
+.Ar 2h ,
+.Ar 90s ,
+or
+.Ar 1h30m .
+A bare number is seconds.
+.It Fl -until Ar time
+Hold until a clock time or a calendar time. Examples:
+.Ar 17:30 ,
+.Ar 5:30pm ,
+.Ar 2026-10-14T18:00 .
+A clock time that has already passed today rolls to tomorrow.
+.It Fl -while-app Ar name
+Hold while an application name matches a running process or a
+.Pa .app
+bundle name. Example:
+.Ar zoom.us .
+.It Fl -while-process Ar name
+Hold while a process with this exact name is running.
+.It Fl -while-pid Ar pid
+Hold while that process id is alive.
+.It Fl -schedule Ar spec
+Weekly windows. Example:
+.Ar "Mon-Fri 09:00-17:00" .
+The end time is exclusive.
+.Ar 00:00-24:00
+covers a full day. A range such as
+.Ar 22:00-06:00
+crosses midnight. Separate extra windows with a semicolon.
+.El
+.Sh ASSERTIONS
+With no assertion flags, KeepAwake prevents idle display sleep and idle system sleep.
+.Bl -tag -width indent
+.It Fl d , Fl -display
+Prevent idle display sleep.
+.It Fl i , Fl -idle-system
+Prevent idle system sleep.
+.It Fl s , Fl -system
+Prevent system sleep while on a power adapter.
+.It Fl m , Fl -disk
+Prevent disk idle sleep.
+.It Fl u , Fl -user-activity
+Declare user activity.
+.It Fl -reason Ar text
+Name stored on the assertion.
+.It Fl -backend Ar auto|iokit|caffeinate
+Choose the implementation.
+.It Fl -dry-run
+Print the plan or plist and do not change the system.
+.It Fl -json
+Write JSON to stdout.
+.El
+.Sh INSTALL
+.Bl -tag -width indent
+.It Fl -agent
+Per-user LaunchAgent. This is the default. The plist is written under
+.Pa ~/Library/LaunchAgents .
+.It Fl -daemon
+System LaunchDaemon. Requires root. The plist is written under
+.Pa /Library/LaunchDaemons .
+.It Fl -user Ar name
+Console user for an agent installed as root.
+.It Fl -label Ar label
+launchd label. Defaults to
+.Sy com.keepawake.agent
+or
+.Sy com.keepawake.daemon .
+.It Fl -no-copy
+Point launchd at
+.Fl -binary
+instead of copying the executable into Application Support.
+.It Fl -keep-alive
+Restart the job if it exits.
+.It Fl -no-keep-alive
+Leave the job unloaded after it exits.
+.It Fl -purge
+On uninstall, also delete the copied binary.
+.El
+.Sh FILES
+.Bl -tag -width indent
+.It Pa ~/Library/LaunchAgents/com.keepawake.agent.plist
+Per-user job.
+.It Pa /Library/LaunchDaemons/com.keepawake.daemon.plist
+System job.
+.It Pa ~/Library/Application Support/KeepAwake/
+Copied user binary and session files.
+.It Pa /Library/Application Support/KeepAwake/
+Copied daemon binary and root session files.
+.It Pa ~/Library/Logs/KeepAwake/
+Agent logs.
+.It Pa /Library/Logs/KeepAwake/
+Daemon logs.
+.It Pa /Library/Managed Preferences/com.keepawake.plist
+Machine managed preferences.
+.El
+.Sh EXIT STATUS
+.Bl -tag -width indent
+.It 0
+Success. Stop, resume, and uninstall also return 0 when there is nothing to do.
+.It 1
+Usage or another general error.
+.It 2
+Managed preferences denied the request.
+.It 3
+The power assertion could not be created.
+.It 4
+A launchd operation failed, or root was required.
+.It 5
+A requested process id was not running.
+.El
+.Sh SEE ALSO
+.Xr caffeinate 8 ,
+.Xr launchctl 1 ,
+.Xr pmset 1
