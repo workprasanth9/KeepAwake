@@ -217,7 +217,7 @@ public final class PowerSession {
                 name as CFString,
                 "" as CFString,
                 timeoutValue,
-                kIOPMAssertionTimeoutActionTurnOff,
+                kIOPMAssertionTimeoutActionTurnOff as CFString,
                 &identifier
             )
             if described == kIOReturnSuccess {
