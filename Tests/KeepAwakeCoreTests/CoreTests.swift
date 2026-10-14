@@ -491,6 +491,22 @@ final class RepositoryTextTests: XCTestCase {
         }
     }
 
+    func testCheckTextScriptPasses() throws {
+        let root = repositoryRoot()
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/bin/bash")
+        process.arguments = [root.appendingPathComponent("Scripts/check-text.sh").path]
+        let stdout = Pipe()
+        let stderr = Pipe()
+        process.standardOutput = stdout
+        process.standardError = stderr
+        try process.run()
+        process.waitUntilExit()
+        let output = String(decoding: stdout.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
+        let errorOutput = String(decoding: stderr.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
+        XCTAssertEqual(process.terminationStatus, 0, output + errorOutput)
+    }
+
     func testShellScriptsParse() throws {
         let root = repositoryRoot()
         let scripts = [
