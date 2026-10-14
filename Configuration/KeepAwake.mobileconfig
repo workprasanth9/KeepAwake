@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>PayloadContent</key>
+  <array>
+    <dict>
+      <key>PayloadType</key>
+      <string>com.keepawake</string>
+      <key>PayloadIdentifier</key>
+      <string>com.keepawake.preferences</string>
+      <key>PayloadUUID</key>
+      <string>8F4E2C10-6B3A-4D5E-9F70-1A2B3C4D5E6F</string>
+      <key>PayloadVersion</key>
+      <integer>1</integer>
+      <key>PayloadDisplayName</key>
+      <string>KeepAwake</string>
+      <key>PayloadDescription</key>
+      <string>Managed settings for KeepAwake.</string>
+      <key>Disabled</key>
+      <false/>
+      <key>AllowIndefinite</key>
+      <true/>
+      <key>EnforceSchedule</key>
+      <false/>
+      <key>DefaultSchedule</key>
+      <string>Mon-Fri 08:00-18:00</string>
+      <key>LockAssertionProfile</key>
+      <false/>
+      <key>PreventDisplaySleep</key>
+      <true/>
+      <key>PreventIdleSystemSleep</key>
+      <true/>
+      <key>PreventSystemSleep</key>
+      <false/>
+      <key>PreventDiskIdle</key>
+      <false/>
+      <key>DeclareUserActivity</key>
+      <false/>
+      <key>Reason</key>
+      <string>KeepAwake</string>
+      <key>LockReason</key>
+      <false/>
+      <key>AllowUserAgent</key>
+      <true/>
+      <key>AllowSystemDaemon</key>
+      <true/>
+      <key>Backend</key>
+      <string>auto</string>
+      <key>LockBackend</key>
+      <false/>
+    </dict>
+  </array>
+  <key>PayloadDisplayName</key>
+  <string>KeepAwake</string>
+  <key>PayloadDescription</key>
+  <string>Example managed preferences for the KeepAwake Mac utility.</string>
+  <key>PayloadIdentifier</key>
+  <string>com.keepawake.profile</string>
+  <key>PayloadRemovalDisallowed</key>
+  <false/>
+  <key>PayloadScope</key>
+  <string>System</string>
+  <key>PayloadType</key>
+  <string>Configuration</string>
+  <key>PayloadUUID</key>
+  <string>C0FFEE00-1111-4222-8333-444455556666</string>
+  <key>PayloadVersion</key>
+  <integer>1</integer>
+</dict>
+</plist>

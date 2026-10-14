@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Disabled</key>
+  <false/>
+  <key>AllowIndefinite</key>
+  <true/>
+  <key>EnforceSchedule</key>
+  <false/>
+  <key>DefaultSchedule</key>
+  <string>Mon-Fri 08:00-18:00</string>
+  <key>LockAssertionProfile</key>
+  <false/>
+  <key>PreventDisplaySleep</key>
+  <true/>
+  <key>PreventIdleSystemSleep</key>
+  <true/>
+  <key>PreventSystemSleep</key>
+  <false/>
+  <key>PreventDiskIdle</key>
+  <false/>
+  <key>DeclareUserActivity</key>
+  <false/>
+  <key>Reason</key>
+  <string>KeepAwake</string>
+  <key>LockReason</key>
+  <false/>
+  <key>AllowUserAgent</key>
+  <true/>
+  <key>AllowSystemDaemon</key>
+  <true/>
+  <key>Backend</key>
+  <string>auto</string>
+  <key>LockBackend</key>
+  <false/>
+</dict>
+</plist>

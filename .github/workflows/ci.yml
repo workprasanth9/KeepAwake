@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: swift --version
+
+      - name: Reject em dashes
+        run: ./Scripts/check-text.sh
+
+      - name: Test
+        run: swift test
+
+      - name: Smoke test the command
+        run: |
+          swift run keepawake --help
+          swift run keepawake start --help
+          swift run keepawake install --help
+          swift run keepawake schedule "Mon-Fri 09:00-17:00"
+          swift run keepawake start --duration 1h --dry-run
+          swift run keepawake config
+
+      - name: Build universal binary
+        run: ./Scripts/build-universal.sh
+
+      - name: Confirm architectures
+        run: |
+          lipo -info dist/keepawake | tee /tmp/keepawake-lipo.txt
+          grep -q arm64 /tmp/keepawake-lipo.txt
+          grep -q x86_64 /tmp/keepawake-lipo.txt
+          dist/keepawake --version
+          dist/keepawake schedule "Mon-Fri 08:00-18:00"
+          ./Scripts/package-menu-app.sh
+          test -d dist/KeepAwake.app
