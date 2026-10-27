@@ -27,7 +27,7 @@ brew trust workprasanth9/tap
 brew install --cask keepawake
 ```
 
-Recent Homebrew versions refuse to load a third party tap until you trust it, which is what `brew trust` does. This installs `KeepAwake.app` in `/Applications` and links the `keepawake` command line tool into your Homebrew prefix. The cask clears the download quarantine flag, because the release is ad hoc signed and not notarized.
+Homebrew 7 refuses to load casks from a third party tap until you trust it, which is what `brew trust` does. Installing by the full name, `brew install --cask workprasanth9/tap/keepawake`, also works without that step, because naming the tap trusts that one cask. This installs `KeepAwake.app` in `/Applications` and links the `keepawake` command line tool into your Homebrew prefix. The cask clears the download quarantine flag, because the release is ad hoc signed and not notarized.
 
 Update or remove it:
 
