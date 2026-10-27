@@ -22,10 +22,12 @@ The menu bar app uses SwiftUI. The command line tool is the part you deploy.
 ### Homebrew
 
 ```bash
-brew install --cask workprasanth9/tap/keepawake
+brew tap workprasanth9/tap
+brew trust workprasanth9/tap
+brew install --cask keepawake
 ```
 
-This installs `KeepAwake.app` in `/Applications` and links the `keepawake` command line tool into your Homebrew prefix. The cask clears the download quarantine flag, because the release is ad hoc signed and not notarized.
+Recent Homebrew versions refuse to load a third party tap until you trust it, which is what `brew trust` does. This installs `KeepAwake.app` in `/Applications` and links the `keepawake` command line tool into your Homebrew prefix. The cask clears the download quarantine flag, because the release is ad hoc signed and not notarized.
 
 Update or remove it:
 
