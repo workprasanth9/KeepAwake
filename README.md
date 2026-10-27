@@ -389,7 +389,7 @@ make universal
 make pkg
 ```
 
-CI runs on `macos-15`. It runs the text check, the tests, a few command smoke tests, and a universal build, then uploads the release artifacts from `Scripts/build-release.sh` as the `keepawake-macos-universal` workflow artifact. Releases are published from that artifact.
+CI runs on `macos-15-intel`, because the arm64 macOS runners were stuck in the queue. It runs the text check, the tests, a few command smoke tests, and a universal build, then uploads the release artifacts from `Scripts/build-release.sh` as the `keepawake-macos-universal` workflow artifact. Releases are published from that artifact.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. User facing text in this repository does not use em dashes.
 

@@ -22,7 +22,7 @@ First public release.
 ### Changed
 
 - The command line only package is now `keepawake-cli-<version>.pkg` and is a product archive
-- CI runs on `macos-15` and uploads the release artifacts. Releases are published from the CI build instead of a tag workflow
+- CI runs on `macos-15-intel` and uploads the release artifacts. Releases are published from the CI build instead of a tag workflow
 
 ## [0.1.0] - 2026-10-14
 
