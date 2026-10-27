@@ -1,9 +1,9 @@
 SWIFT ?= swift
 
-.PHONY: help build test universal menu pkg clean
+.PHONY: help build test universal menu pkg release clean
 
 help:
-	@echo "Targets: build, test, universal, menu, pkg, clean"
+	@echo "Targets: build, test, universal, menu, pkg, release, clean"
 
 build:
 	$(SWIFT) build -c release
@@ -19,6 +19,9 @@ menu:
 
 pkg:
 	./Scripts/build-pkg.sh
+
+release:
+	./Scripts/build-release.sh
 
 clean:
 	$(SWIFT) package clean

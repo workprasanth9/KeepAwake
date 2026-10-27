@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-15
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -44,5 +44,20 @@ jobs:
           grep -q x86_64 /tmp/keepawake-lipo.txt
           dist/keepawake --version
           dist/keepawake schedule "Mon-Fri 08:00-18:00"
-          ./Scripts/package-menu-app.sh
-          test -d dist/KeepAwake.app
+
+      - name: Build release artifacts
+        run: |
+          ./Scripts/build-release.sh
+          lipo -info dist/KeepAwake.app/Contents/MacOS/KeepAwake
+          lipo -info dist/KeepAwake.app/Contents/Resources/keepawake
+          pkgutil --payload-files dist/KeepAwake-*.pkg | grep -E 'KeepAwake.app$|keepawake$'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keepawake-macos-universal
+          path: |
+            dist/keepawake-*-macos-universal.zip
+            dist/KeepAwake-*-app.zip
+            dist/KeepAwake-*.pkg
+            dist/keepawake-cli-*.pkg
+            dist/keepawake-*.sha256

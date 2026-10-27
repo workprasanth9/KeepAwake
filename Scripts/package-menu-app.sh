@@ -24,6 +24,10 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS"
 cp "$DIST/KeepAwakeMenu" "$APP/Contents/MacOS/KeepAwake"
 chmod 755 "$APP/Contents/MacOS/KeepAwake"
+# Ship the command line tool inside the bundle so Homebrew can link it.
+mkdir -p "$APP/Contents/Resources"
+cp "$DIST/keepawake" "$APP/Contents/Resources/keepawake"
+chmod 755 "$APP/Contents/Resources/keepawake"
 
 cat > "$APP/Contents/Info.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -61,6 +65,7 @@ cat > "$APP/Contents/Info.plist" <<EOF
 EOF
 
 if command -v codesign >/dev/null 2>&1; then
+  codesign -s - --force "$APP/Contents/Resources/keepawake" || true
   codesign -s - --force "$APP" || true
 fi
 

@@ -19,7 +19,43 @@ The menu bar app uses SwiftUI. The command line tool is the part you deploy.
 
 ## Install
 
-Build from a clone:
+### Homebrew
+
+```bash
+brew install --cask workprasanth9/tap/keepawake
+```
+
+This installs `KeepAwake.app` in `/Applications` and links the `keepawake` command line tool into your Homebrew prefix. The cask clears the download quarantine flag, because the release is ad hoc signed and not notarized.
+
+Update or remove it:
+
+```bash
+brew upgrade --cask keepawake
+brew uninstall --cask keepawake
+brew uninstall --cask --zap keepawake   # also deletes preferences and Application Support files
+```
+
+Run `keepawake uninstall` first if you installed a LaunchAgent or LaunchDaemon. Homebrew does not remove launchd jobs.
+
+### Installer package
+
+Each [GitHub release](https://github.com/workprasanth9/KeepAwake/releases/latest) attaches universal builds made by CI:
+
+| File | Contents |
+| --- | --- |
+| `KeepAwake-<version>.pkg` | `KeepAwake.app` in `/Applications` and `keepawake` in `/usr/local/bin` |
+| `keepawake-cli-<version>.pkg` | Only `/usr/local/bin/keepawake`, for Jamf and other MDM policies |
+| `keepawake-<version>-macos-universal.zip` | The command line tool, manual page, and license |
+| `KeepAwake-<version>-app.zip` | The menu bar app, with the command line tool inside |
+| `keepawake-<version>.sha256` | Checksums |
+
+The packages are unsigned. If Gatekeeper blocks one, Control-click it in Finder and choose Open, or allow it in System Settings, Privacy & Security. Sign the packages with your Developer ID before a wide rollout. A binary from the zip may carry a quarantine flag:
+
+```bash
+xattr -d com.apple.quarantine /usr/local/bin/keepawake
+```
+
+### Build from source
 
 ```bash
 git clone https://github.com/workprasanth9/KeepAwake.git
@@ -28,18 +64,7 @@ swift build -c release
 sudo install -m 755 .build/release/keepawake /usr/local/bin/keepawake
 ```
 
-On a Mac you can build both architectures:
-
-```bash
-make universal
-sudo install -m 755 dist/keepawake /usr/local/bin/keepawake
-```
-
-GitHub release tags attach that universal binary, a zip of the menu bar app, and an unsigned package. The package is built by `Scripts/build-pkg.sh` and installs the binary at `/usr/local/bin/keepawake`. Sign it with your Developer ID before a wide rollout. A downloaded binary may carry a quarantine flag:
-
-```bash
-xattr -d com.apple.quarantine /usr/local/bin/keepawake
-```
+`make release` builds every release artifact into `dist/`. With Command Line Tools only, the local build may be native arch only. CI builds the universal release.
 
 Optional manual page:
 
@@ -294,8 +319,8 @@ With that profile, an 8 hour duration is allowed, an indefinite hold is not, and
 
 ## Deploy with Jamf Pro
 
-1. Build or download the universal binary.
-2. Sign `dist/keepawake-cli.pkg` (from `make pkg`) with your installer certificate. The package only places `/usr/local/bin/keepawake`. It does not load a launchd job.
+1. Download `keepawake-cli-<version>.pkg` from the latest release, or build it with `make pkg`.
+2. Sign the package with your installer certificate. The package only places `/usr/local/bin/keepawake`. It does not load a launchd job.
 3. Upload `Configuration/KeepAwake.mobileconfig` as a computer configuration profile, or upload `Configuration/com.keepawake.plist` as an Application & Custom Settings payload for domain `com.keepawake`. Scope it to the Macs that should receive the policy. Edit the schedule before you enforce it.
 4. Add `Examples/Jamf/install-keepawake.sh` as a Jamf script. Run it after the package, as root.
 
@@ -326,6 +351,8 @@ Prefer the daemon for a lab schedule that should apply with no user logged in. P
 
 The menu bar app is a SwiftUI extra for interactive use. It is not the MDM install path.
 
+Install it with Homebrew or `KeepAwake-<version>.pkg`, then open KeepAwake from Applications. To build it yourself:
+
 ```bash
 make menu
 cp -R dist/KeepAwake.app /Applications/
@@ -350,7 +377,7 @@ Installed jobs use `launchctl bootstrap` and `launchctl bootout` on macOS 13. Ag
 - Assertions are suggestions. Thermal limits, a low battery, and an administrator can still sleep the Mac. KeepAwake does not hide its assertions.
 - A one-shot `--duration` or `--until` install does not continue after a reboot.
 - `--while-app` matches the process name and the `.app` bundle name. Some apps use a different process name than the menu bar title. Check `ps -ax -o ucomm=,command=` if a watch does not see the app.
-- The GitHub release package is unsigned. Gatekeeper and Jamf both expect you to sign payloads you deploy at scale.
+- The GitHub release packages are unsigned, and the app is ad hoc signed, not notarized. Gatekeeper and Jamf both expect you to sign payloads you deploy at scale.
 - The tool targets macOS 13 and later because of the menu bar app and the launchctl bootstrap flow used here.
 
 ## Development
@@ -362,22 +389,19 @@ make universal
 make pkg
 ```
 
-CI runs on `macos-latest`. It runs the tests, a few command smoke tests, and a universal build. Pushing a tag such as `v0.1.0` runs the release workflow, which attaches:
-
-- `keepawake`, the universal binary
-- `keepawake-macos-universal.tar.gz`
-- `KeepAwake-menu.zip`
-- `keepawake-cli.pkg` (unsigned)
-- `keepawake.sha256`
+CI runs on `macos-15`. It runs the text check, the tests, a few command smoke tests, and a universal build, then uploads the release artifacts from `Scripts/build-release.sh` as the `keepawake-macos-universal` workflow artifact. Releases are published from that artifact.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. User facing text in this repository does not use em dashes.
 
 ## Roadmap
 
-- A Homebrew tap
 - Signed and notarized release artifacts
 - Menu bar controls for the installed schedule, plus a notification when a window opens or closes
 - A `pkg` postinstall that is still off by default, so a package never starts a hold unless a policy asks for one
+
+## Support
+
+If KeepAwake is useful to you, please [star it on GitHub](https://github.com/workprasanth9/KeepAwake) and share it with a Mac admin friend. It really helps, and it keeps the updates coming.
 
 ## License
 

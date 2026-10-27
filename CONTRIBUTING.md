@@ -39,4 +39,4 @@ Match the surrounding Swift. Prefer small types in `KeepAwakeCore` so behavior c
 
 1. Update `KeepAwake.version` in `Sources/KeepAwakeCore/Version.swift`.
 2. Move the changelog notes into a version section dated today.
-3. Tag `vX.Y.Z` and push the tag. The release workflow attaches the universal binary, the menu bar app, and an unsigned package.
+3. Push to main, wait for CI, then tag `vX.Y.Z` and publish a GitHub release with the files from the `keepawake-macos-universal` CI artifact.
